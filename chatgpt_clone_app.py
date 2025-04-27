@@ -1,23 +1,26 @@
 import os
-import streamlit as st # To create webapplication
-from langchain_openai import OpenAI # To use OpenAI API
-from dotenv import load_dotenv # To load the virtual environment
+import streamlit as st
+from dotenv import load_dotenv
+from langchain.llms import HuggingFacePipeline
+from transformers import pipeline
+
 load_dotenv()
 
-st.title("ChatGPT-Clone")
+st.title("ChatGPT-Clone (Lightweight)")
 
-#set openai api key from stremlit secrets
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+pipe = pipeline(
+    "text2text-generation",             # <-- Important: text2text for FLAN models
+    model="google/flan-t5-small",        # <-- Small free model
+    max_length=256,
+    do_sample=True,
+    temperature=0.7
+)
 
-# set a default model
-if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-3.5-turbo" #We've set a default
+client = HuggingFacePipeline(pipeline=pipe)
 
-# Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display chat messages from history on app rerun
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
