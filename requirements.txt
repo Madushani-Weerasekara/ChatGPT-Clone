@@ -1,6 +1,7 @@
-langchain
-langchain-openai
-python-dotenv
 streamlit
-tiktoken
-langchain_experimental
+langchain
+transformers
+accelerate
+torch
+python-dotenv
+
